@@ -150,28 +150,29 @@ class ReShareDB {
 		
 	}
 	
-	public function findBooksByISBN($search) {
+	public function findBooksByISBN($search) { //This function searches the database by ISBN for books
 		
-		$db_handle = mysqli_connect(self::SERVER, self::USERNAME, self::PASSWORD);
+		$db_handle = mysqli_connect(self::SERVER, self::USERNAME, self::PASSWORD);   //Connect to DB
 		$db_found = mysqli_select_db( $db_handle, self::NAME);
 		
 		$search = htmlspecialchars($search);
-		$sql = "SELECT * FROM `books` WHERE `ISBN` = \"".$search."\" ORDER BY `PostedDate` DESC";
+		$sql = "SELECT * FROM `books` WHERE `ISBN` = \"".$search."\" ORDER BY `PostedDate` DESC"; //Query by ISBN, return newest to oldest
 		$result = $db_handle->query($sql);
 		
-		/*
+		/*  More secure SQL connection, however is non functional
 		mysqli_stmt_bind_param($stmnt, "s", $search);		//Binds the $search variable (as a string) in place of the ? above.
 		mysqli_stmt_execute($stmnt);						//Executes the query.
 		mysqli_stmt_store_result($stmnt);					//Stores the result of the query.
 		$result = mysqli_stmt_get_result($stmnt);			//Stores the query result.
 		*/
-		$books = array();
-		if (mysqli_num_rows($result) > 0) {
+		$books = array(); //Create array of Books
+		if (mysqli_num_rows($result) > 0) {       
 			$key_range = mysqli_num_rows($result);
 			$key = 0;
 			
 			while($row = mysqli_fetch_assoc($result)) {
-				$books[$key] = new Book($row["ID"],$row["ISBN"],$row["Title"],$row["Edition"],$row["Author"],$row["Seller"],$row["Price"],$row["PostedDate"],$row["LendBuy"]);
+				$books[$key] = new Book($row["ID"],$row["ISBN"],$row["Title"],$row["Edition"],$row["Author"],$row["Seller"],$row["Price"],$row["PostedDate"],$row["LendBuy"]); 
+				//Creates books to correspond with results from DB
 				$key = $key + 1;
 			}
 			
@@ -181,14 +182,14 @@ class ReShareDB {
 		
 		} else {
 			
-			mysqli_close($db_handle);
+			mysqli_close($db_handle); //Close connection
 			return false;	
 		}
 	}
 			
 			
 			
-	public function FindBooksByTitle($search) {	
+	public function FindBooksByTitle($search) {	 //This function searches the database by Title for books
 
 	
 		$db_handle = mysqli_connect(self::SERVER, self::USERNAME, self::PASSWORD);
@@ -215,6 +216,7 @@ class ReShareDB {
 			
 			while($row = mysqli_fetch_assoc($result)) {
 				$books[$key] = new Book($row["ID"],$row["ISBN"],$row["Title"],$row["Edition"],$row["Author"],$row["Seller"],$row["Price"],$row["PostedDate"],$row["LendBuy"]);
+				//Creates books to correspond with results from DB
 				$key = $key + 1;
 			}
 			
@@ -227,6 +229,37 @@ class ReShareDB {
 		}	
 	}	
 	
+	public function FindBooksByUser($search) {	 //This function searches the database by Title for books
+
+	
+		$db_handle = mysqli_connect(self::SERVER, self::USERNAME, self::PASSWORD);
+		$db_found = mysqli_select_db( $db_handle, self::NAME);
+		
+		$sql =  "SELECT * FROM `books` WHERE `Seller` LIKE \"".$search."\" ORDER BY `PostedDate` DESC";
+		$result = $db_handle->query($sql);
+	
+		
+		$books = array();
+		
+		
+		if (mysqli_num_rows($result) > 0) {
+			$key_range = mysqli_num_rows($result);
+			$key = 0;
+			
+			while($row = mysqli_fetch_assoc($result)) {
+				$books[$key] = new Book($row["ID"],$row["ISBN"],$row["Title"],$row["Edition"],$row["Author"],$row["Seller"],$row["Price"],$row["PostedDate"],$row["LendBuy"]);
+				//Creates books to correspond with results from DB
+				$key = $key + 1;
+			}
+			
+			mysqli_close($db_handle);
+			return $books;
+			
+		} else {
+			mysqli_close($db_handle);
+			return false;
+		}	
+	}	
 	
 	public function addBook($ISBN, $seller, $price, $lendBuy, $edition) {
 		
@@ -357,6 +390,7 @@ $db = new ReShareDB();
 
 //var_dump( $db -> getTen());
 //var_dump( $db -> removeBook(6));
+var_dump($db -> FindBooksByUser("Jacob Swehla"));
 
 
 ?>
