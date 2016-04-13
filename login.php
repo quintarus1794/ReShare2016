@@ -38,15 +38,14 @@
 
 ?>
 
-<FORM NAME ="form1" METHOD ="POST" ACTION ="login.php">
+<FORM NAME ="form1" METHOD ="POST" ACTION ="register.php">
 
-	Username: <INPUT TYPE = 'text' Name ='username'  value="<?PHP echo $uname;?>" maxlength="20">
-	Password: <INPUT TYPE = 'password' Name ='password'  value="<?PHP echo $pword;?>" maxlength="16">
-	<INPUT TYPE = "Submit" Name = "Submit1"  VALUE = "Login">
+	<div>Email: </div><INPUT TYPE = 'text' Name ='username'  value="<?PHP print $uname;?>" maxlength="20"><br />
+	<div>Password: </div><INPUT TYPE = 'password' Name ='password'  value="<?PHP print $pword;?>" maxlength="16"><br />
+	<div><INPUT TYPE = "Submit" Name = "Submit1"  VALUE = "Login"></div><br />
+	<div id="error_message"><?PHP print $errorMessage;?></div><br />
 
 </FORM>
-
-<?PHP print $errorMessage;?>
 
 </body>
 </html>
