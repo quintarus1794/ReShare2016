@@ -1,3 +1,5 @@
+<?php require "checkLogin.php" ?>
+
 <html>
  <head>
   <title>ReShare: Sell/Lend</title>
