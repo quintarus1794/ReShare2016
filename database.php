@@ -4,27 +4,27 @@
 $APIkey = "f8bgy6bj5fq6762x8qkqyx7k";
 
 class Book {
-    public $id;
-	public $isbn;
-	public $title;
-	public $edition;
-	public $author;
-	public $seller;
-	public $price;
-	public $postedDate;
-	public $buyBorrow;
+    public $ID;
+	public $ISBN;
+	public $Title;
+	public $Edition;
+	public $Author;
+	public $Seller;
+	public $Price;
+	public $PostedDate;
+	public $LendBuy;
 	
 	
-	public function __construct($id,$isbn,$title,$edition,$author,$seller,$price,$postedDate,$buyBorrow) {
-	$this->id = $id;
-	$this->isbn = $isbn;
-	$this->title = $title;
-	$this->edition = $edition;
-	$this->author = $author;
-	$this->seller = $seller;
-	$this->price = $price;
-	$this->postedDate = $postedDate;
-	$this->buyBorrow = $buyBorrow;
+	public function __construct($ID,$ISBN,$Title,$Edition,$Author,$Seller,$Price,$PostedDate,$LendBuy) {
+	$this->ID = $ID;
+	$this->ISBN = $ISBN;
+	$this->Title = $Title;
+	$this->Edition = $Edition;
+	$this->Author = $Author;
+	$this->Seller = $Seller;
+	$this->Price = $Price;
+	$this->PostedDate = $PostedDate;
+	$this->LendBuy = $LendBuy;
 	
 	}
 	
@@ -38,7 +38,7 @@ class ReShareDB {
 	const SERVER = "127.0.0.1";		//database address
 	const USERTABLE = "login";		//table containing user info
 	const STORAGETABLE = "books";	//table containing book info
-	const APIKEY = "f8bgy6bj5fq6762x8qkqyx7k";
+	const APIKEY = "9ZKU4OHK";
 	
 
 	/*	REGISTRATION FUNCTION
@@ -224,38 +224,62 @@ class ReShareDB {
 	
 	
 	public function addBook($ISBN, $seller, $price, $lendBuy) {
-		//STUFF
-		$stuff = $this->callAPI("GET", "http://api.harpercollins.com/api/v3/hcapim?apiname=catalog&format=JSON&isbn=".$ISBN."&apikey="."f8bgy6bj5fq6762x8qkqyx7k", false);
+		
+		$stuff = $this->callAPI("GET", "http://isbndb.com/api/v2/json/". self::APIKEY. "/book/".$ISBN, false);
 		$data = json_decode($stuff);
+		//echo "JSON:";
+		var_dump($data);
+		/*$db_handle = mysqli_connect(self::SERVER, self::USERNAME, self::PASSWORD);
+		$db_found = mysqli_select_db( $db_handle, self::NAME);
+	
+		$pword = htmlspecialchars($search);
+	
+		$stmnt = mysqli_prepare($db_handle, "INSERT INTO `books`(`ISBN`, `Title`, `Edition`, `Author`, `Seller`, `Price`, `PostedDate`, `LendBuy`) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)");	//Prepares the query as a mysqli_stmt.
+		mysqli_stmt_bind_param($stmnt, "ssssssss", $ISBN, );		//Binds the $search variable (as a string) in place of the ? above.
+		mysqli_stmt_execute($stmnt);						//Executes the query.
+		mysqli_stmt_store_result($stmnt);					//Stores the result of the query.
+		$result = mysqli_stmt_get_result($stmnt);			//Stores the query result.
+		*/
+		
+		
 	}
 	
 	
 	public function callAPI($method, $url, $data ) {
-		$curl = curl_init();
+					$curl = curl_init();
+				//	echo "URL:";
+				//	var_dump($url);
+			try {
+				$ch = curl_init();
 
-		switch ($method)
-		{
-			case "POST":
-				curl_setopt($curl, CURLOPT_POST, 1);
+				if (FALSE === $ch)
+					throw new Exception('failed to initialize');
 
-				if ($data)
-					curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-				break;
-			case "PUT":
-				curl_setopt($curl, CURLOPT_PUT, 1);
-				break;
-			default:
-			   ;
+				curl_setopt($ch, CURLOPT_URL, "$url");
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+				
+				
+				$content = curl_exec($ch);
+		
+				if (FALSE === $content)
+					throw new Exception(curl_error($ch), curl_errno($ch));
+					
+			} catch(Exception $e) {
+
+				trigger_error(sprintf(
+					'Curl failed with error #%d: %s',
+					$e->getCode(), $e->getMessage()),
+					E_USER_ERROR);
+
+			}
+			//echo "Content:";
+			//var_dump($content); 
+			return $content;
 		}
 
-
-		$result = curl_exec($curl);
-
-		curl_close($curl);
-
-		return $result;
-	}
-
 }
+$db = new ReShareDB();
+$db->addBook(9780385533225, "test", "15", true)
 
 ?>
