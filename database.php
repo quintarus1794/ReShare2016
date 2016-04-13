@@ -276,14 +276,21 @@ class ReShareDB {
 		$volumedata = (array) $dataLVL1["volumeInfo"];
 		$authordata = (array) $volumedata;
 		
-	
-		$stmnt = mysqli_prepare($db_handle, "INSERT INTO `books`(`ISBN`, `Title`, `Edition`, `Author`, `Seller`, `Price`, `LendBuy`) VALUES ( ?, ?, ?, ?, ?, ?, ?)");	//Prepares the query as a mysqli_stmt.
-		mysqli_stmt_bind_param($stmnt, "sssssss", $ISBN, $volumedata["title"], $edition, $volumedata["authors"][0], $seller, $price, $lendBuy );		//Binds the $search variable (as a string) in place of the ? above.
+		$sql = sprintf("INSERT INTO `books`(`ISBN`, `Title`, `Edition`, `Author`, `Seller`, `Price`, `LendBuy`) VALUES (\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\")", $ISBN, $volumedata["title"], $edition, $volumedata["authors"][0], $seller, $price, $lendBuy );
+		//much line, such SQL, wow
+		//echo $sql;
+		$db_handle = mysqli_connect(self::SERVER, self::USERNAME, self::PASSWORD);
+		$db_found = mysqli_select_db( $db_handle, self::NAME);
+
+		$result = $db_handle->query($sql);
 		
 		
-		mysqli_stmt_execute($stmnt);						//Executes the query.
-		mysqli_stmt_store_result($stmnt);					//Stores the result of the query.
-		$result = mysqli_stmt_get_result($stmnt);			//Stores the query result.
+		//$stmnt = mysqli_prepare($db_handle, "INSERT INTO `books`(`ID`,`ISBN`, `Title`, `Edition`, `Author`, `Seller`, `Price`, `LendBuy`) VALUES ( ?, ?, ?, ?, ?, ?, ?)");	//Prepares the query as a mysqli_stmt.
+		//mysqli_stmt_bind_param($stmnt, "sssssss", $ISBN, $volumedata["title"], $edition, $volumedata["authors"][0], $seller, $price, $lendBuy );		//Binds the $search variable (as a string) in place of the ? above.
+		
+		
+		//mysqli_stmt_execute($stmnt);						//Executes the query.
+		
 		return true;
 		} else {
 		return false;
@@ -382,6 +389,17 @@ class ReShareDB {
 	}
 
 }
+//Uncomment to bulk add valid books
+/*$db = new ReShareDB();
+var_dump($db->addBook("9780385533225", "JacobSwehla@letu.edu", "10.99", "1", "5"));
+var_dump($db->addBook("0133943038", "BrentBaas@letu.edu", "0", "0", "5"));
+var_dump($db->addBook("0553803700", "JacobSwehla@letu.edu", "200", "1", "8"));
+var_dump($db->addBook("0141439602", "austintaylordavy@letu.edu", "250", "1", "3"));
+var_dump($db->addBook("0441783589", "JacobSwehla@letu.edu", "500", "1", "1"));
+var_dump($db->addBook("0340837942", "JacobSwehla@letu.edu", "500", "1", "1"));
+var_dump($db->addBook("9780765311788", "JonathanHerbert@letu.edu", "25", "1", "3"));
+var_dump($db->addBook("9780765311788", "JonathanHerbert@letu.edu", "25.00", "1", "9"));
+*/
 
 
 ?>
