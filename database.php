@@ -4,27 +4,27 @@
 $APIkey = "f8bgy6bj5fq6762x8qkqyx7k";
 
 class Book {
-    public $ID;
-	public $ISBN;
-	public $Title;
-	public $Edition;
-	public $Author;
-	public $Seller;
-	public $Price;
-	public $PostedDate;
-	public $LendBuy;
+    public $id;
+	public $isbn;
+	public $title;
+	public $edition;
+	public $author;
+	public $seller;
+	public $price;
+	public $postedDate;
+	public $buyBorrow;
 	
 	
-	public function __construct($ID,$ISBN,$Title,$Edition,$Author,$Seller,$Price,$PostedDate,$LendBuy) {
-	$this->ID = $ID;
-	$this->ISBN = $ISBN;
-	$this->Title = $Title;
-	$this->Edition = $Edition;
-	$this->Author = $Author;
-	$this->Seller = $Seller;
-	$this->Price = $Price;
-	$this->PostedDate = $PostedDate;
-	$this->LendBuy = $LendBuy;
+	public function __construct($id,$isbn,$title,$edition,$author,$seller,$price,$postedDate,$buyBorrow) {
+	$this->id = $id;
+	$this->isbn = $isbn;
+	$this->title = $title;
+	$this->edition = $edition;
+	$this->author = $author;
+	$this->seller = $seller;
+	$this->price = $price;
+	$this->postedDate = $postedDate;
+	$this->buyBorrow = $buyBorrow;
 	
 	}
 	
