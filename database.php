@@ -13,9 +13,10 @@ class Book {
 	public $Price;
 	public $PostedDate;
 	public $LendBuy;
+	public $Picture
 	
 	
-	public function __construct($ID,$ISBN,$Title,$Edition,$Author,$Seller,$Price,$PostedDate,$LendBuy) {
+	public function __construct($ID,$ISBN,$Title,$Edition,$Author,$Seller,$Price,$PostedDate,$LendBuy,$Picture) {
 	$this->ID = $ID;
 	$this->ISBN = $ISBN;
 	$this->Title = $Title;
@@ -25,6 +26,7 @@ class Book {
 	$this->Price = $Price;
 	$this->PostedDate = $PostedDate;
 	$this->LendBuy = $LendBuy;
+	$this->Picture = $Picture;
 	
 	}
 	
