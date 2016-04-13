@@ -1,7 +1,7 @@
 <?php
 
 
-$APIkey = "f8bgy6bj5fq6762x8qkqyx7k";
+//$APIkey = "f8bgy6bj5fq6762x8qkqyx7k";
 
 class Book {
     public $id;
@@ -38,7 +38,7 @@ class ReShareDB {
 	const SERVER = "127.0.0.1";		//database address
 	const USERTABLE = "login";		//table containing user info
 	const STORAGETABLE = "books";	//table containing book info
-	const APIKEY = "AIzaSyDIWd3XchLhz1b18OZZGD0pCQoiyNwtdp0";
+	const APIKEY = "AIzaSyDIWd3XchLhz1b18OZZGD0pCQoiyNwtdp0"; //
 
 	
 
@@ -287,6 +287,36 @@ class ReShareDB {
 		return $result;
 	}
 	
+	public function getTen(){
+		$sql = "SELECT * FROM `books` WHERE 1 ORDER BY `PostedDate` DESC LIMIT 10";
+		
+		$db_handle = mysqli_connect(self::SERVER, self::USERNAME, self::PASSWORD);
+		$db_found = mysqli_select_db( $db_handle, self::NAME);
+
+		$result = $db_handle->query($sql);
+		
+		$books = array();
+		
+		
+		if (mysqli_num_rows($result) > 0) {
+			$key_range = mysqli_num_rows($result);
+			$key = 0;
+			
+			while($row = mysqli_fetch_assoc($result)) {
+				$books[$key] = new Book($row["ID"],$row["ISBN"],$row["Title"],$row["Edition"],$row["Author"],$row["Seller"],$row["Price"],$row["PostedDate"],$row["LendBuy"]);
+				$key = $key + 1;
+			}
+			
+			mysqli_close($db_handle);
+			return $books;
+			
+		} else {
+			mysqli_close($db_handle);
+			return false;
+		}	
+		
+	}
+	
 	public function callAPI($method, $url, $data ) {
 			$curl = curl_init();
 				//	echo "URL:";
@@ -325,7 +355,7 @@ class ReShareDB {
 }
 $db = new ReShareDB();
 
-var_dump( $db -> addBook("9780765311788", "Jacob Swehla", "100.95", 1, "1"));
+//var_dump( $db -> getTen());
 //var_dump( $db -> removeBook(6));
 
 
