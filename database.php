@@ -261,7 +261,7 @@ class ReShareDB {
 		}	
 	}	
 	
-	public function addBook($ISBN, $seller, $price, $lendBuy, $edition) {
+	public function addBook($ISBN, $seller, $price, $lendBuy, $edition) { //Adds book data to DB by looking up info from API
 		
 		$stuff = $this->callAPI("GET", "https://www.googleapis.com/books/v1/volumes?q=isbn:" . $ISBN . "&key=". self::APIKEY, false);
 		$data = (array) json_decode($stuff);
@@ -276,13 +276,10 @@ class ReShareDB {
 		$volumedata = (array) $dataLVL1["volumeInfo"];
 		$authordata = (array) $volumedata;
 		
-		//var_dump($volumedata);
+	
 		$stmnt = mysqli_prepare($db_handle, "INSERT INTO `books`(`ISBN`, `Title`, `Edition`, `Author`, `Seller`, `Price`, `LendBuy`) VALUES ( ?, ?, ?, ?, ?, ?, ?)");	//Prepares the query as a mysqli_stmt.
 		mysqli_stmt_bind_param($stmnt, "sssssss", $ISBN, $volumedata["title"], $edition, $volumedata["authors"][0], $seller, $price, $lendBuy );		//Binds the $search variable (as a string) in place of the ? above.
-		//$stmnt = mysqli_prepare($db_handle, "INSERT INTO `books`(`ISBN`, `Title`, `Edition`, `Author`, `Seller`, `Price`, `LendBuy`) VALUES ( ?, ?, ?, ?, ?, ?, ?)");	//Prepares the query as a mysqli_stmt.
-		//$testbook ="Test Book";
-		//$testauthor = "TestAuth";
-		//mysqli_stmt_bind_param($stmnt, "sssssss", $ISBN, $testbook, $edition, $testauthor, $seller, $price, $lendBuy );		//Binds the $search variable (as a string) in place of the ? above.
+		
 		
 		mysqli_stmt_execute($stmnt);						//Executes the query.
 		mysqli_stmt_store_result($stmnt);					//Stores the result of the query.
@@ -294,7 +291,7 @@ class ReShareDB {
 
 	}
 	
-	public function getImage($ISBN){
+	public function getImage($ISBN){ //Gets a book image based off of ISBN
 		$stuff = $this->callAPI("GET", "https://www.googleapis.com/books/v1/volumes?q=isbn:" . $ISBN . "&key=". self::APIKEY, false);
 		$data = (array) json_decode($stuff);
 		//echo "JSON:";
@@ -309,7 +306,7 @@ class ReShareDB {
 		}
 	}
 	
-	public function removeBook($ID){
+	public function removeBook($ID){ //Removes book by Primary Key
 		$sql = "DELETE FROM `books` WHERE `ID` = " .$ID;
 		
 		$db_handle = mysqli_connect(self::SERVER, self::USERNAME, self::PASSWORD);
@@ -320,7 +317,7 @@ class ReShareDB {
 		return $result;
 	}
 	
-	public function getTen(){
+	public function getTen(){ //Gets most recent ten books to be posted
 		$sql = "SELECT * FROM `books` WHERE 1 ORDER BY `PostedDate` DESC LIMIT 10";
 		
 		$db_handle = mysqli_connect(self::SERVER, self::USERNAME, self::PASSWORD);
@@ -350,10 +347,9 @@ class ReShareDB {
 		
 	}
 	
-	public function callAPI($method, $url, $data ) {
-			$curl = curl_init();
-				//	echo "URL:";
-				//	var_dump($url);
+	public function callAPI($method, $url, $data ) { //Used to query internet API
+			$curl = curl_init(); 
+				
 			try {
 				$ch = curl_init();
 
@@ -386,11 +382,6 @@ class ReShareDB {
 	}
 
 }
-$db = new ReShareDB();
-
-//var_dump( $db -> getTen());
-//var_dump( $db -> removeBook(6));
-var_dump($db -> FindBooksByUser("Jacob Swehla"));
 
 
 ?>
