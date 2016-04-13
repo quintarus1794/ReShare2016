@@ -38,7 +38,7 @@ class ReShareDB {
 	const SERVER = "127.0.0.1";		//database address
 	const USERTABLE = "login";		//table containing user info
 	const STORAGETABLE = "books";	//table containing book info
-	const APIKEY = "9ZKU4OHK";
+	const APIKEY = "AIzaSyDIWd3XchLhz1b18OZZGD0pCQoiyNwtdp0";
 	
 
 	/*	REGISTRATION FUNCTION
@@ -223,25 +223,36 @@ class ReShareDB {
 	}	
 	
 	
-	public function addBook($ISBN, $seller, $price, $lendBuy) {
+	public function addBook($ISBN, $seller, $price, $lendBuy, $edition) {
 		
-		$stuff = $this->callAPI("GET", "http://isbndb.com/api/v2/json/". self::APIKEY. "/book/".$ISBN, false);
-		$data = json_decode($stuff);
+		$stuff = $this->callAPI("GET", "https://www.googleapis.com/books/v1/volumes?q=isbn:" . $ISBN . "&key=". self::APIKEY, false);
+		$data = (array) json_decode($stuff);
 		//echo "JSON:";
-		var_dump($data);
-		/*$db_handle = mysqli_connect(self::SERVER, self::USERNAME, self::PASSWORD);
+		//var_dump($data);
+		$db_handle = mysqli_connect(self::SERVER, self::USERNAME, self::PASSWORD);
 		$db_found = mysqli_select_db( $db_handle, self::NAME);
-	
-		$pword = htmlspecialchars($search);
-	
-		$stmnt = mysqli_prepare($db_handle, "INSERT INTO `books`(`ISBN`, `Title`, `Edition`, `Author`, `Seller`, `Price`, `PostedDate`, `LendBuy`) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)");	//Prepares the query as a mysqli_stmt.
-		mysqli_stmt_bind_param($stmnt, "ssssssss", $ISBN, );		//Binds the $search variable (as a string) in place of the ? above.
+		
+		if($data["totalItems"] != 0){
+		$dataLVL0 = (array)$data["items"];
+		$dataLVL1 = (array) $dataLVL0[0];
+		$volumedata = (array) $dataLVL1["volumeInfo"];
+		$authordata = (array) $volumedata;
+		
+		//var_dump($volumedata);
+		$stmnt = mysqli_prepare($db_handle, "INSERT INTO `books`(`ISBN`, `Title`, `Edition`, `Author`, `Seller`, `Price`, `LendBuy`) VALUES ( ?, ?, ?, ?, ?, ?, ?)");	//Prepares the query as a mysqli_stmt.
+		mysqli_stmt_bind_param($stmnt, "sssssss", $ISBN, $volumedata["title"], $edition, $volumedata["authors"][0], $seller, $price, $lendBuy );		//Binds the $search variable (as a string) in place of the ? above.
+		//$stmnt = mysqli_prepare($db_handle, "INSERT INTO `books`(`ISBN`, `Title`, `Edition`, `Author`, `Seller`, `Price`, `LendBuy`) VALUES ( ?, ?, ?, ?, ?, ?, ?)");	//Prepares the query as a mysqli_stmt.
+		//$testbook ="Test Book";
+		//$testauthor = "TestAuth";
+		//mysqli_stmt_bind_param($stmnt, "sssssss", $ISBN, $testbook, $edition, $testauthor, $seller, $price, $lendBuy );		//Binds the $search variable (as a string) in place of the ? above.
+		
 		mysqli_stmt_execute($stmnt);						//Executes the query.
 		mysqli_stmt_store_result($stmnt);					//Stores the result of the query.
 		$result = mysqli_stmt_get_result($stmnt);			//Stores the query result.
-		*/
-		
-		
+		return true;
+		} else {
+		return false;
+		}
 	}
 	
 	
@@ -280,6 +291,6 @@ class ReShareDB {
 
 }
 $db = new ReShareDB();
-$db->addBook(9780385533225, "test", "15", true)
+$db->addBook("9", "test", "15", "1", "5")
 
 ?>
