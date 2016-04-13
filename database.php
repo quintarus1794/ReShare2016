@@ -276,6 +276,17 @@ class ReShareDB {
 		}
 	}
 	
+	public function removeBook($ID){
+		$sql = "DELETE FROM `books` WHERE `ID` = " .$ID;
+		
+		$db_handle = mysqli_connect(self::SERVER, self::USERNAME, self::PASSWORD);
+		$db_found = mysqli_select_db( $db_handle, self::NAME);
+
+		$result = $db_handle->query($sql);
+		
+		return $result;
+	}
+	
 	public function callAPI($method, $url, $data ) {
 			$curl = curl_init();
 				//	echo "URL:";
@@ -314,7 +325,8 @@ class ReShareDB {
 }
 $db = new ReShareDB();
 
-var_dump( $db -> findBooksByISBN("0133943038"));
+var_dump( $db -> addBook("9780765311788", "Jacob Swehla", "100.95", 1, "1"));
+//var_dump( $db -> removeBook(6));
 
 
 ?>
