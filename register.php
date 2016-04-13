@@ -12,12 +12,14 @@
 	
 	$uname = "";
 	$pword = "";
+	$rePword = "";
 	$errorMessage = "";
 	
 	if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 		
 		$uname = $_POST['username'];
 		$pword = $_POST['password'];
+		$rePword = $_POST['re-password'];
 		
 		$db = new ReShareDB();
 
@@ -58,7 +60,18 @@
 			//	the user already exists.
 			//============================================================================
 			
-			if (!($db->register($uname, $pword))) {
+			if(preg_match("/^[a-zA-Z0-9._%+-]+@letu.edu$/",$uname) != 1) {
+				
+				$errorMessage = "Please enter a valid LETU email address";
+				
+			}
+			elseif($pword !== $rePword) {
+				
+				$errorMessage = "Entered passwords do not match";
+				
+			}
+			elseif(!($db->register($uname, $pword))) {
+				
 				$errorMessage = "Username already taken";
 			}
 			else {
@@ -78,13 +91,13 @@
 ?> 
 <FORM NAME ="form1" METHOD ="POST" ACTION ="register.php">
 
-	Username: <INPUT TYPE = 'text' Name ='username'  value="<?PHP print $uname;?>" maxlength="20">
-	Password: <INPUT TYPE = 'password' Name ='password'  value="<?PHP print $pword;?>" maxlength="16">
-	<INPUT TYPE = "Submit" Name = "Submit1"  VALUE = "Register">
+	<div>Email: </div><INPUT TYPE = 'text' Name ='username'  value="<?PHP print $uname;?>" maxlength="20"><br />
+	<div>Password: </div><INPUT TYPE = 'password' Name ='password'  value="<?PHP print $pword;?>" maxlength="16"><br />
+	<div>Re-Enter Password: </div><INPUT TYPE = 'password' Name ='re-password'  value="<?PHP print $rePword;?>" maxlength="16"><br />
+	<div><INPUT TYPE = "Submit" Name = "Submit1"  VALUE = "Register"></div><br />
+	<div id="error_message"><?PHP print $errorMessage;?></div><br />
 
 </FORM>
-
-<?PHP print $errorMessage;?>
 
 </body>
 </html>
