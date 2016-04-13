@@ -259,34 +259,42 @@ class ReShareDB {
 	
 	
 	public function callAPI($method, $url, $data ) {
-		$curl = curl_init();
+			$curl = curl_init();
+				//	echo "URL:";
+				//	var_dump($url);
+			try {
+				$ch = curl_init();
 
-		switch ($method)
-		{
-			case "POST":
-				curl_setopt($curl, CURLOPT_POST, 1);
+				if (FALSE === $ch)
+					throw new Exception('failed to initialize');
 
-				if ($data)
-					curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
-				break;
-			case "PUT":
-				curl_setopt($curl, CURLOPT_PUT, 1);
-				break;
-			default:
-			   ;
-		}
+				curl_setopt($ch, CURLOPT_URL, "$url");
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+				
+				
+				$content = curl_exec($ch);
+		
+				if (FALSE === $content)
+					throw new Exception(curl_error($ch), curl_errno($ch));
+					
+			} catch(Exception $e) {
 
+				trigger_error(sprintf(
+					'Curl failed with error #%d: %s',
+					$e->getCode(), $e->getMessage()),
+					E_USER_ERROR);
 
-		$result = curl_exec($curl);
+			}
+			//echo "Content:";
+			//var_dump($content); 
+			return $content;
+		
 
-		curl_close($curl);
-
-		return $result;
 	}
 
 }
-$db = new ReShareDB();
-$db->addBook("9", "test", "15", "1", "5")
+
 
 
 ?>
