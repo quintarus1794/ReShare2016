@@ -224,7 +224,7 @@ class ReShareDB {
 	
 	
 	public function addBook($ISBN, $seller, $price, $lendBuy) {
-		//STUFF
+		
 		$stuff = $this->callAPI("GET", "http://api.harpercollins.com/api/v3/hcapim?apiname=catalog&format=JSON&isbn=".$ISBN."&apikey="."f8bgy6bj5fq6762x8qkqyx7k", false);
 		$data = json_decode($stuff);
 	}
