@@ -154,17 +154,18 @@ class ReShareDB {
 		
 		$db_handle = mysqli_connect(self::SERVER, self::USERNAME, self::PASSWORD);
 		$db_found = mysqli_select_db( $db_handle, self::NAME);
-	
-		$pword = htmlspecialchars($search);
-	
-		$stmnt = mysqli_prepare($db_handle, "SELECT * FROM ".self::STORAGETABLE." WHERE ISBN = ?");	//Prepares the query as a mysqli_stmt.
+		
+		$search = htmlspecialchars($search);
+		$sql = "SELECT * FROM `books` WHERE `ISBN` = \"".$search."\" ORDER BY `PostedDate` DESC";
+		$result = $db_handle->query($sql);
+		
+		/*
 		mysqli_stmt_bind_param($stmnt, "s", $search);		//Binds the $search variable (as a string) in place of the ? above.
 		mysqli_stmt_execute($stmnt);						//Executes the query.
 		mysqli_stmt_store_result($stmnt);					//Stores the result of the query.
 		$result = mysqli_stmt_get_result($stmnt);			//Stores the query result.
-	
+		*/
 		$books = array();
-		
 		if (mysqli_num_rows($result) > 0) {
 			$key_range = mysqli_num_rows($result);
 			$key = 0;
@@ -175,6 +176,7 @@ class ReShareDB {
 			}
 			
 			mysqli_close($db_handle);
+			var_dump($books);
 			return $books;
 		
 		} else {
@@ -191,16 +193,18 @@ class ReShareDB {
 	
 		$db_handle = mysqli_connect(self::SERVER, self::USERNAME, self::PASSWORD);
 		$db_found = mysqli_select_db( $db_handle, self::NAME);
-	
-		$pword = htmlspecialchars($search);
+		
+		$sql =  "SELECT * FROM `books` WHERE `Title` LIKE \"".$search."\" ORDER BY `PostedDate` DESC";
+		$result = $db_handle->query($sql);
+		//$search = htmlspecialchars($search);
 		
 		
-		$stmnt = mysqli_prepare($db_handle, "SELECT * FROM ".self::STORAGETABLE." WHERE Title LIKE ?");	//Prepares the query as a mysqli_stmt.
-		mysqli_stmt_bind_param($stmnt, "s", $search);		//Binds the $search variable (as a string) in place of the ? above.
+		/*$stmnt = mysqli_prepare($db_handle, "SELECT * FROM 'books' WHERE 'Title' LIKE 'Software Engineering' ORDER BY 'PostedDate' DESC");	//Prepares the query as a mysqli_stmt.
+		//mysqli_stmt_bind_param($stmnt, "s", $search);		//Binds the $search variable (as a string) in place of the ? above.
 		mysqli_stmt_execute($stmnt);						//Executes the query.
 		mysqli_stmt_store_result($stmnt);					//Stores the result of the query.
 		$result = mysqli_stmt_get_result($stmnt);			//Stores the query result.
-		
+		*/
 		
 		$books = array();
 		
@@ -257,6 +261,20 @@ class ReShareDB {
 
 	}
 	
+	public function getImage($ISBN){
+		$stuff = $this->callAPI("GET", "https://www.googleapis.com/books/v1/volumes?q=isbn:" . $ISBN . "&key=". self::APIKEY, false);
+		$data = (array) json_decode($stuff);
+		//echo "JSON:";
+		//var_dump($data);
+		if($data["totalItems"] != 0){
+		$dataLVL0 = (array)$data["items"];
+		$dataLVL1 = (array) $dataLVL0[0];
+		$volumedata = (array) $dataLVL1["volumeInfo"];
+		$imgArray = (array) $volumedata["imageLinks"];
+		return $imgArray["smallThumbnail"];
+		//var_dump($imgArray);
+		}
+	}
 	
 	public function callAPI($method, $url, $data ) {
 			$curl = curl_init();
@@ -294,7 +312,9 @@ class ReShareDB {
 	}
 
 }
+$db = new ReShareDB();
 
+var_dump( $db -> findBooksByISBN("0133943038"));
 
 
 ?>
