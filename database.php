@@ -177,7 +177,7 @@ class ReShareDB {
 			}
 			
 			mysqli_close($db_handle);
-			var_dump($books);
+			//var_dump($books);
 			return $books;
 		
 		} else {
@@ -279,11 +279,6 @@ class ReShareDB {
 		//var_dump($volumedata);
 		$stmnt = mysqli_prepare($db_handle, "INSERT INTO `books`(`ISBN`, `Title`, `Edition`, `Author`, `Seller`, `Price`, `LendBuy`) VALUES ( ?, ?, ?, ?, ?, ?, ?)");	//Prepares the query as a mysqli_stmt.
 		mysqli_stmt_bind_param($stmnt, "sssssss", $ISBN, $volumedata["title"], $edition, $volumedata["authors"][0], $seller, $price, $lendBuy );		//Binds the $search variable (as a string) in place of the ? above.
-		//$stmnt = mysqli_prepare($db_handle, "INSERT INTO `books`(`ISBN`, `Title`, `Edition`, `Author`, `Seller`, `Price`, `LendBuy`) VALUES ( ?, ?, ?, ?, ?, ?, ?)");	//Prepares the query as a mysqli_stmt.
-		//$testbook ="Test Book";
-		//$testauthor = "TestAuth";
-		//mysqli_stmt_bind_param($stmnt, "sssssss", $ISBN, $testbook, $edition, $testauthor, $seller, $price, $lendBuy );		//Binds the $search variable (as a string) in place of the ? above.
-		
 		mysqli_stmt_execute($stmnt);						//Executes the query.
 		mysqli_stmt_store_result($stmnt);					//Stores the result of the query.
 		$result = mysqli_stmt_get_result($stmnt);			//Stores the query result.
@@ -386,11 +381,7 @@ class ReShareDB {
 	}
 
 }
-$db = new ReShareDB();
 
-//var_dump( $db -> getTen());
-//var_dump( $db -> removeBook(6));
-var_dump($db -> FindBooksByUser("Jacob Swehla"));
 
 
 ?>

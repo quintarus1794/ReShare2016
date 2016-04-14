@@ -4,6 +4,8 @@
   <link rel="stylesheet" href="CSS/main.css" type="text/css">
  </head>
  <body>
+ 
+ 
  <?php 
  
 	require 'header.php';
@@ -38,11 +40,13 @@
 
 ?>
 
-<FORM NAME ="form1" METHOD ="POST" ACTION ="register.php">
+<h2>Please Login</h2>
 
-	<div>Email: </div><INPUT TYPE = 'text' Name ='username'  value="<?PHP print $uname;?>" maxlength="20"><br />
+<FORM NAME ="login_form" METHOD ="POST" ACTION ="login.php">
+
+	<div>Email: </div><INPUT TYPE = 'text' Name ='username'  value="<?PHP print $uname;?>" maxlength="50"><br />
 	<div>Password: </div><INPUT TYPE = 'password' Name ='password'  value="<?PHP print $pword;?>" maxlength="16"><br />
-	<div><INPUT TYPE = "Submit" Name = "Submit1"  VALUE = "Login"></div><br />
+	<div><INPUT TYPE = "Submit" Name = "login_submit"  VALUE = "Login"></div><br />
 	<div id="error_message"><?PHP print $errorMessage;?></div><br />
 
 </FORM>

@@ -24,15 +24,17 @@ h2 {
 	line-height: 33px;
 }
 
-table {
+table, td, th {
 	border-collapse: collapse;
-	border-spacing: 0;
-	border-width: 1px;
-    border-style: solid;
+	border: 1px solid black;
 }
 
 td, th {
 	padding: 5px;
+}
+
+td img {
+	max-height: 100px;
 }
 
 form {
@@ -46,8 +48,12 @@ form div {
 	display: inline-block;
 }
 
-form input {
-	margin-bottom: 2em;
+form input, select {
+	margin: 2em 10em 2em 0;
+}
+
+.delete_box {
+	margin: 2em;
 }
 
 #header_outer {

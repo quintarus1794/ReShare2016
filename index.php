@@ -11,23 +11,39 @@
 		<h2>Recent Listings</h2>
 		
 		
-		<table id="MainContent_AvailableListings">
-			<tr>
-			<th>Cover</th><th>Title</th><th>ISBN</th><th>Buy/Borrow</th><th>Price</th><th>Seller</th>
-			</tr>
+		<?php
+			require 'database.php';
 			
+			$db = new ReShareDB();
+			$books = $db->getTen();
 			
-			<?php
-				/*
-				require 'database.php';
+			echo "<table id=\"MainContent_AvailableListings\">";
+			echo "<tr>";
+			echo "<th>Cover</th><th>Title</th><th>ISBN</th><th>Buy/Borrow</th><th>Price</th><th>Seller</th>";
+			echo "</tr>";
 				
-				foreach($books as $book) {
-					echo "<tr>";
-					echo "<td><img src=\"\" /></td><td>".$book->title."</td><td>"$book->isbn."</td><td>".$book->buyBorrow."</td><td>".$book->seller."</td>";
-					echo "</tr>";
+			foreach($books as $book) {
+				if($book->buyBorrow == 1) {
+					
+					$buyBorrow = "Buy";
+					$price = $book->price;
+					
+				}else {
+					
+					$buyBorrow = "Borrow";
+					$price = "N/A";
+					
 				}
-				*/
-			?>
+				
+				$img = $db->getImage($book->isbn);
+				
+				echo "<tr>";
+				echo "<td><img src=\"".$img."\" /></td><td>".$book->title."</td><td>".$book->isbn."</td><td>".$buyBorrow."</td><td>$".$price."</td><td>".$book->seller."</td>";
+				echo "</tr>";
+			}
+				
+			echo "</table>";
+		?>
 
 		
 		</table>
