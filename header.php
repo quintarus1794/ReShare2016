@@ -3,7 +3,13 @@
 	
 		<div id="header_login">
 			<ul class="header_content">
-				<li><a href="login.php">Login</a></li>
+				<?php
+				if (!(isset($_SESSION['login']) && $_SESSION['login'] != '')){
+					echo "<li><a href=\"login.php\">Login</a></li>";
+				}else {
+					echo "<li><a href=\"logout.php\">Log Out</a></li>";
+				}
+				?>
 				<li><a href="register.php">Register</a></li>
 			</ul>
 		</div>
